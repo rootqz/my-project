@@ -1,0 +1,41 @@
+entrypoint = "index.js"
+modules = ["nodejs-22"]
+hidden = [".config", "package-lock.json"]
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
+
+[nix]
+channel = "stable-24_11"
+packages = ["glib", "gtk3", "at-spi2-atk", "at-spi2-core", "libdrm", "mesa", "libxkbcommon", "nss", "nspr", "cups", "dbus", "xorg.libX11", "xorg.libXScrnSaver", "xorg.libXtst", "xorg.libxcb", "alsa-lib", "libpulseaudio", "cairo", "pango"]
+
+[deployment]
+run = ["node", "index.js"]
+deploymentTarget = "autoscale"
+ignorePorts = false
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Electron App"
+
+[[workflows.workflow]]
+name = "Electron App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npx electron ."
+
+[workflows.workflow.metadata]
+outputType = "vnc"
